@@ -47,6 +47,8 @@
     </div>
   </div>
 
+
+
   <audio data-key="65" src="sounds/clap.wav"></audio>
   <audio data-key="83" src="sounds/hihat.wav"></audio>
   <audio data-key="68" src="sounds/kick.wav"></audio>
@@ -58,6 +60,34 @@
   <audio data-key="76" src="sounds/tink.wav"></audio>
 
 <script>
+
+    const keys = document.querySelectorAll('.key');
+    keys.forEach(key => key.addEventListener('transitionend', removeTransition));
+    window.addEventListener('keydown', playSound);
+
+    function removeTransition(event) {
+        const { propertyName } = event;
+        if (propertyName !== 'transform') return; // skip it if its not a transition
+        this.classList.remove('playing');
+    }
+
+    function playSound(event) {
+        const { keyCode } = event;
+        const audio = document.querySelector(`audio[data-key="${keyCode}"]`);
+        const key = document.querySelector(`.key[data-key="${keyCode}"]`);
+
+        // if there's no audio, stop playing
+        if (!audio) {
+            return;
+        }
+
+        // rewind to the start
+        // otherwise audio element currently playing cant be played again
+        audio.currentTime = 0;
+        audio.volume = 0.01;
+        audio.play();
+        key.classList.add('playing');
+    }
 
 </script>
 
